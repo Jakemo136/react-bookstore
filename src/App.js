@@ -44,26 +44,29 @@ export class App extends Component {
   }
 
   addToCart = (bookId) => {
-    // let checkItem = this.state.cart.filter(book => book.id === parseInt(bookId))
-
-    // if (checkItem.length === 1) {
-    //   let cart = this.state.cart
-    //   let cartItem = cart.filter(item => item.book.id === parseInt(bookId))[0]
-    //   cartItem.quantity += 1
+    let checkItem = this.state.cart.filter(book => book.id == bookId)
+    console.log('checkItem: ',checkItem)
+    
+    if (checkItem.length === 1) {
+      let cart = this.state.cart
+      let cartItem = cart.filter(book => book.id == bookId)[0]
+      cartItem.quantity += 1
       
-    //   this.setState({...this.state.cart, cartItem})
-    // } else {
-      let bookToAdd = this.state.books.find(book => book.id === parseInt(bookId))
-      console.log(bookToAdd)
-      let newItem = {
-        id: this.state.cart.length + 1,
+      this.setState({...this.state.cart, cartItem})
+    } else {
+      let bookToAdd = this.state.books.find(book => book.id == bookId)
+      
+      let newCartItem = {
+        id: bookId,
         book: bookToAdd,
         quantity: 1
       }
+      // console.log(newCartItem)
 
-      this.setState({cart: [...this.state.cart, newItem]})  
-    // }
-    // console.log(this.state.cart)
+      this.setState({cart: [...this.state.cart, newCartItem]})  
+      
+    }
+    console.log('cart: ',this.state.cart)
   }
 
   render() {
