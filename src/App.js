@@ -43,14 +43,27 @@ export class App extends Component {
     this.setState({ filterString : newState.filterString})
   }
 
-  addToCart = (id) => {
-    let newCartState = {...this.state.cart}
-    console.log("adding to cart")
-    console.log(id)
-    let bookAdded = this.books.id === id
-    newCartState.id = bookAdded
-    console.log(bookAdded)
-    // this.setState({ cart : bookAdded})
+  addToCart = (bookId) => {
+    // let checkItem = this.state.cart.filter(book => book.id === parseInt(bookId))
+
+    // if (checkItem.length === 1) {
+    //   let cart = this.state.cart
+    //   let cartItem = cart.filter(item => item.book.id === parseInt(bookId))[0]
+    //   cartItem.quantity += 1
+      
+    //   this.setState({...this.state.cart, cartItem})
+    // } else {
+      let bookToAdd = this.state.books.find(book => book.id === parseInt(bookId))
+      console.log(bookToAdd)
+      let newItem = {
+        id: this.state.cart.length + 1,
+        book: bookToAdd,
+        quantity: 1
+      }
+
+      this.setState({cart: [...this.state.cart, newItem]})  
+    // }
+    // console.log(this.state.cart)
   }
 
   render() {
