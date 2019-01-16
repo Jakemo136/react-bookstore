@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import SearchBar from './components/SearchBar'
 import BookList from './components/BookList'
+import Cart from './components/Cart'
+
+const bodyStyle = {
+  paddingTop: "75px"
+}
 
 export class App extends Component {
   
@@ -28,7 +33,7 @@ export class App extends Component {
   //     }
   //   })
   //   const book = await response.json()
-  //   this.setState({books: [...this.state.books, book]})
+  //   this.setState({cart: [...this.state.cart, book]})
   // }
 
   
@@ -38,16 +43,29 @@ export class App extends Component {
     this.setState({ filterString : newState.filterString})
   }
 
+  addToCart = (id) => {
+    let newCartState = {...this.state.cart}
+    console.log("adding to cart")
+    console.log(id)
+    let bookAdded = this.books.id === id
+    newCartState.id = bookAdded
+    console.log(bookAdded)
+    // this.setState({ cart : bookAdded})
+  }
+
   render() {
     return (
       <div className="App container-fluid">
         <div>
           <SearchBar handleSearch={this.handleSearch}/>
         </div>
-        <div className="row">
+        <div className="row" style={bodyStyle}>
           <div className="col-md-8">  
-            <BookList books={this.state.books} filterString={this.state.filterString}/>
+            <BookList books={this.state.books} filterString={this.state.filterString} addToCart={this.addToCart}/>
           </div>
+          <div className="col-md-4 border">
+            <Cart />
+          </div>  
         </div>   
       </div>
     );
