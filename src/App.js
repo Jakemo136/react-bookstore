@@ -8,7 +8,9 @@ const bodyStyle = {
   paddingTop: "75px"
 }
 
-export class App extends Component {
+const API = 'http://localhost:8082/api'
+
+class App extends Component {
   
   state = {
     filterString: '',
@@ -17,58 +19,58 @@ export class App extends Component {
   }
   
   async componentDidMount() {
-    const response = await fetch('http://localhost:8082/api/books')
+    const response = await fetch(`${API}/books`)
     const booksJson = await response.json()
     this.setState({books: booksJson})
+    
+    const cartState = this.state.books.filter(book => book.inCart === true)
+    console.log(cartState)
+    this.setState(this.state.cart = cartState)
   }
+        
+  addToCart = async (bookId) => {
+    let bookToAdd = this.state.books.find(book => book.id === parseInt(bookId))
 
-  
-  // async addBookToCart(item) {
-  //   const response = await fetch('http://localhost:8082/api/books/cart/add/:id', {
-  //     method: 'PATCH',
-  //     body: JSON.stringify(item),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     }
-  //   })
-  //   const book = await response.json()
-  //   this.setState({cart: [...this.state.cart, book]})
-  // }
-
-  
+    await fetch(`${API}/books/cart/add/${bookToAdd.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+    
+    this.setState({cart: [...this.state.cart, bookToAdd]})
+    console.log(this.state.cart)
+  }
+    
   handleSearch = (e) => {
     let newState = {...this.state}
     newState.filterString = e.target.value.toLowerCase()
+    
     this.setState({ filterString : newState.filterString})
   }
-
-  addToCart = (bookId) => {
-    let checkItem = this.state.cart.filter(book => book.id == bookId)
-    console.log('checkItem: ',checkItem)
-    
-    if (checkItem.length === 1) {
-      let cart = this.state.cart
-      let cartItem = cart.filter(book => book.id == bookId)[0]
-      cartItem.quantity += 1
-      
-      this.setState({...this.state.cart, cartItem})
-    } else {
-      let bookToAdd = this.state.books.find(book => book.id == bookId)
-      
-      let newCartItem = {
-        id: bookId,
-        book: bookToAdd,
-        quantity: 1
-      }
-      // console.log(newCartItem)
-
-      this.setState({cart: [...this.state.cart, newCartItem]})  
-      
-    }
-    console.log('cart: ',this.state.cart)
+  
+  total = () => {
+    let result = this.state.cart.reduce((result, book) => {
+      return Number(result) + Number(book.price)
+    }, 0)
+    return result
   }
+  
+  removeBook = async (bookId) => {
+    let newCart = this.state.cart.filter(book => (book.id !== bookId))
+    
+    await fetch(`${API}/books/cart/remove/${bookId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
 
+    this.setState(this.state.cart = newCart)
+  }
+  
   render() {
     return (
       <div className="App container-fluid">
@@ -80,11 +82,11 @@ export class App extends Component {
             <BookList books={this.state.books} filterString={this.state.filterString} addToCart={this.addToCart}/>
           </div>
           <div className="col-md-4 border">
-            <Cart />
+            <Cart cart={this.state.cart} total={this.total} removeBook={this.removeBook}/>
           </div>  
         </div>   
       </div>
-    );
+    )
   }
 }
 
