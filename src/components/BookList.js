@@ -3,7 +3,7 @@ import BookListItem from './BookListItem'
 
 const BookList = ({books, filterString, addToCart}) => {
 
-  const filterBooks = books.filter(book => book.title.toLowerCase().includes(filterString) || book.author.toLowerCase().includes(filterString))
+  const filterBooks = books.filter(book => book.title.toLowerCase().includes(filterString) || book.author.toLowerCase().includes(filterString) || book.subtitle.toLowerCase().includes(filterString))
 
   return (
     <ul className="list-group">
