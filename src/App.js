@@ -17,20 +17,18 @@ class App extends Component {
   }
   
   async componentDidMount() {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}`)
-    console.log(response)
+    const response = await fetch(`/books`)
     const booksJson = await response.json()
     this.setState({books: booksJson})
     
     const cartState = this.state.books.filter(book => book.inCart === true)
-    console.log(cartState)
     this.setState(this.state.cart = cartState)
   }
         
   addToCart = async (bookId) => {
     let bookToAdd = this.state.books.find(book => book.id === parseInt(bookId))
 
-    await fetch(`${process.env.REACT_APP_API_URL}/cart/add/${bookToAdd.id}`, {
+    await fetch(`/books/cart/add/${bookToAdd.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +56,7 @@ class App extends Component {
   removeBook = async (bookId) => {
     let newCart = this.state.cart.filter(book => (book.id !== bookId))
     
-    await fetch(`${process.env.REACT_APP_API_URL}/cart/remove/${bookId}`, {
+    await fetch(`/books/cart/remove/${bookId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
