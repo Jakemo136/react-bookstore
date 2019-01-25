@@ -8,8 +8,6 @@ const bodyStyle = {
   paddingTop: "75px"
 }
 
-const API = 'http://localhost:8082/api/books'
-
 class App extends Component {
   
   state = {
@@ -19,7 +17,8 @@ class App extends Component {
   }
   
   async componentDidMount() {
-    const response = await fetch(`${API}`)
+    const response = await fetch(`${process.env.REACT_APP_API_URL}`)
+    console.log(response)
     const booksJson = await response.json()
     this.setState({books: booksJson})
     
@@ -31,7 +30,7 @@ class App extends Component {
   addToCart = async (bookId) => {
     let bookToAdd = this.state.books.find(book => book.id === parseInt(bookId))
 
-    await fetch(`${API}/cart/add/${bookToAdd.id}`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/cart/add/${bookToAdd.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +58,7 @@ class App extends Component {
   removeBook = async (bookId) => {
     let newCart = this.state.cart.filter(book => (book.id !== bookId))
     
-    await fetch(`${API}/books/cart/remove/${bookId}`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/cart/remove/${bookId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
