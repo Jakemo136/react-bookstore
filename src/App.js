@@ -15,6 +15,9 @@ class App extends Component {
     books: [],
     cart: [] 
   }
+  // jakemo136-collective-api.herokuapp.com/api
+
+  // ${process.env.REACT_APP_API_URL}
   
   async componentDidMount() {
     const response = await fetch(`/books`)
